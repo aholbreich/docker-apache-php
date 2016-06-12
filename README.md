@@ -1,5 +1,5 @@
 
-Docker image to run PHP applications on Apache2 Server
+Docker image to run PHP applications with Apache2 Server
 
 ## Hello World
 
