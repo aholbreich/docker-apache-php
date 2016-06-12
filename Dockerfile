@@ -8,17 +8,16 @@
 # - mememcached
 # 
 # Please keep in mind that this might be not production ready because session is stored inside of container
-FROM debian:jessie
+FROM ubuntu:trusty
 
 MAINTAINER Alexander Holbreich (http://alexander.holbreich.org) 
 
-ENV DEBIAN_FRONTEND noninteractive
-
 RUN apt-get update \
-    && apt-get -yq install \
+    && DEBIAN_FRONTEND=noninteractive apt-get -yq install \
         apache2 \
         libapache2-mod-php5 \
         php5-mysql \
+#        php5-mcrypt \
         php5-gd \
         php5-curl \
         php-pear \
@@ -26,6 +25,10 @@ RUN apt-get update \
         php5-memcached \
     && apt-get clean \ 
     && rm -rf /var/lib/apt/lists/*
+
+#RUN /usr/sbin/php5enmod mcrypt
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
+    sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
 
 # Add image configuration and scripts
 ADD run.sh /run.sh
@@ -44,4 +47,3 @@ VOLUME /var/log/apache2
 EXPOSE 80
 WORKDIR /app
 CMD ["/run.sh"]
-
